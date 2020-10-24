@@ -5,8 +5,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-file_name = 'kidney'
-file_str = './data/' + file_name + '.txt'
+file_name = "kidney"
+file_str = "./data/" + file_name + ".txt"
 
 # print(open(file_str).read())
 df = pd.read_csv(file_str, delim_whitespace=True, skiprows=2, header=None)
@@ -19,14 +19,14 @@ fig, ax1 = plt.subplots()
 ax2 = ax1.twinx()
 
 # draw and label them
-ax1.plot(fat_freq, fat_perm, 'b-', linewidth=2)
-ax2.plot(fat_freq, fat_cond, 'r-', linewidth=2)
+ax1.plot(fat_freq, fat_perm, "b-", linewidth=2)
+ax2.plot(fat_freq, fat_cond, "r-", linewidth=2)
 
 ax1.grid()
 ax1.set_title(file_name)
-ax1.set_xlabel('Frequency (KHz)')
-ax1.set_ylabel('Permitivity', color='b')
-ax2.set_ylabel('Electrical. Cond. (S/m)', color='r')
+ax1.set_xlabel("Frequency (KHz)")
+ax1.set_ylabel("Permitivity", color="b")
+ax2.set_ylabel("Electrical. Cond. (S/m)", color="r")
 
 # export to pdf
 fig.set_size_inches(6, 4)
