@@ -21,8 +21,4 @@ jobs:
       run: |
         $CONDA/bin/conda install flake8
         $CONDA/bin/flake8 .
-    - name: Lint with black
-      run: |
-        $CONDA/bin/conda install black
-        $CONDA/bin/black --check .
 
