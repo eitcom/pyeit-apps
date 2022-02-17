@@ -10,5 +10,5 @@ jobs:
       - uses: psf/black@stable
         with:
           options: "--check --diff"
-          src: "./eitmesh"
+          src: "./pyeit_apps"
           version: "22.1"
