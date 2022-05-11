@@ -7,23 +7,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import pyeit.mesh as mesh
-from pyeit.eit.utils import eit_scan_lines
 from pyeit.io import DAEGER_EIT
 import pyeit.eit.greit as greit
+import pyeit.eit.protocol as protocol
 
-""" 0. construct mesh """
-# note: you should match your electrodes orientation CCW/CW and locations
-mesh_obj, el_pos = mesh.create(16, h0=0.1)
+""" 0. construct mesh (PyEITMesh dataset) """
+mesh_obj = mesh.create(16, h0=0.1)
 # extract node, element, sigma
-pts = mesh_obj["node"]
-tri = mesh_obj["element"]
+pts = mesh_obj.node
+tri = mesh_obj.element
 
 # plot the mesh, visualize the electrodes locations
 fig, ax = plt.subplots(figsize=(6, 6))
 ax.triplot(pts[:, 0], pts[:, 1], tri, linewidth=1)
-ax.plot(pts[el_pos, 0], pts[el_pos, 1], "ro")
-for i, el in enumerate(el_pos):
-    ax.text(pts[el, 0], pts[el, 1], str(i), fontsize=12)
+ax.plot(pts[mesh_obj.el_pos, 0], pts[mesh_obj.el_pos, 1], "ro")
+for i, el in enumerate(mesh_obj.el_pos):
+    ax.text(pts[el, 0], pts[el, 1], str(i+1), fontsize=12)
 ax.axis("equal")
 ax.axis([-1.2, 1.2, -1.2, 1.2])
 
@@ -44,8 +43,7 @@ ax.set_ylabel("Averaged Impedances")
 fig.subplots_adjust(top=0.95, bottom=0.15, left=0.175, right=0.95)
 
 """ 2. measurement protocol """
-el_dist, step = 1, 1
-ex_mat = eit_scan_lines(16, el_dist)
+protocol_obj = protocol.create(mesh_obj.n_el, dist_exc=1, step_meas=1, parser_meas="fmmu")
 
 """ 3. JAC solver """
 # Note: if the jac and the real-problem are generated using the same mesh,
@@ -53,10 +51,8 @@ ex_mat = eit_scan_lines(16, el_dist)
 # However, when you generate jac from a known mesh, but in real-problem
 # (mostly) the shape and the electrode positions are not exactly the same
 # as in mesh generating the jac, then both JAC and data must be normalized.
-eit = greit.GREIT(
-    mesh_obj, el_pos, ex_mat=ex_mat, step=step, parser="fmmu", jac_normalized=True
-)
-eit.setup(p=0.50, lamb=0.01, n=32, s=20, ratio=0.05)
+eit = greit.GREIT(mesh_obj, protocol_obj)
+eit.setup(p=0.50, lamb=0.01, n=32, s=20, ratio=0.05, jac_normalized=True)
 ds = eit.solve(v1, v0, normalize=True)
 x, y, ds = eit.mask_value(ds, mask_value=np.NAN)
 
