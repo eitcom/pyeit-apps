@@ -22,7 +22,7 @@ fig, ax = plt.subplots(figsize=(6, 6))
 ax.triplot(pts[:, 0], pts[:, 1], tri, linewidth=1)
 ax.plot(pts[mesh_obj.el_pos, 0], pts[mesh_obj.el_pos, 1], "ro")
 for i, el in enumerate(mesh_obj.el_pos):
-    ax.text(pts[el, 0], pts[el, 1], str(i+1), fontsize=12)
+    ax.text(pts[el, 0], pts[el, 1], str(i + 1), fontsize=12)
 ax.axis("equal")
 ax.axis([-1.2, 1.2, -1.2, 1.2])
 
@@ -43,7 +43,9 @@ ax.set_ylabel("Averaged Impedances")
 fig.subplots_adjust(top=0.95, bottom=0.15, left=0.175, right=0.95)
 
 """ 2. measurement protocol """
-protocol_obj = protocol.create(mesh_obj.n_el, dist_exc=1, step_meas=1, parser_meas="fmmu")
+protocol_obj = protocol.create(
+    mesh_obj.n_el, dist_exc=1, step_meas=1, parser_meas="fmmu"
+)
 
 """ 3. JAC solver """
 # Note: if the jac and the real-problem are generated using the same mesh,
